@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const superLog = () => {
+export const superLog = () => {
     console.log('executed');
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -22,7 +22,7 @@ const superLog = () => {
             const line = editor.document.lineAt(i);
             const selectionText = line.text;
             const m = selectionText.match(getVariable);;
-            let text = ""
+            let text = "";
             if(selectionText.lastIndexOf(";")===-1){
                 text += ";";
             }
@@ -35,7 +35,7 @@ const superLog = () => {
             // Insert text above current line
             const selectionLine = line;
             const insertPosition = selectionLine.range.end;
-            text += `   console.log( 'Line ${i+1} ----- ${variable}', ${variable})`;
+            text += `   console.log( 'Line ${i+1} ----- ${variable}', ${variable}) //superlog`;
             // text += `\r`;
     
             const whitespace = selectionLine.firstNonWhitespaceCharacterIndex;
@@ -51,4 +51,38 @@ const superLog = () => {
     }
     });
 };
-export default superLog;
+export const superRemove = () =>{
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        return;
+    }
+    // Get user selection
+    const selection = editor.selection;
+
+    const startLine = selection.start.line;
+    const endLine = selection.end.line;
+
+    const getConsoles = /\s*console\.log\([\s\S]*\/\/superlog/g;
+
+
+   
+    editor.edit(editBuilder => {
+
+        for (let i = startLine; i <= endLine; i++) {
+            
+            const selectionText = editor.document.lineAt(i).text;
+            const m = selectionText.match(getConsoles);;
+            console.log(m);
+            if (!m) {
+                continue;
+            }
+            const variable = m[2];
+            
+            const lineStart = new vscode.Position(i, 0);
+            const lineEnd = new vscode.Position(i, editor.document.lineAt(i).text.length);
+            const lineRange = new vscode.Range(lineStart, lineEnd);
+            const newText = selectionText.replace(getConsoles,'');
+            editBuilder.replace(lineRange, newText);
+    }
+    });
+};

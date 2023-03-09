@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import superLog from './main';
+import { superLog, superRemove } from './main';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,11 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('superlogs.log', () => {
+	let disposable1 = vscode.commands.registerCommand('superlogs.log', () => {
 		superLog();
 	});
 
-	context.subscriptions.push(disposable);
+	let disposable2 = vscode.commands.registerCommand('superlogs.remove', () => {
+		superRemove();
+	});
+
+	context.subscriptions.push(disposable1,disposable2);
 }
 
 // This method is called when your extension is deactivated
