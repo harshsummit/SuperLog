@@ -23,7 +23,7 @@ export const superLog = () => {
         for (let i = startLine; i <= endLine; i++) {
             const line = editor.document.lineAt(i);
             const selectionText = line.text;
-            if (selectionText.trim().endsWith('{') || selectionText.trim().endsWith(',')){
+            if (selectionText.trim().endsWith('{') || selectionText.trim().endsWith(',') || selectionText.includes("//superlog")){
                 continue;
             }
             const m = selectionText.match(regex1);;
@@ -38,7 +38,15 @@ export const superLog = () => {
             // if (!m && !n) {
             //     continue;
             // }
-            const variable =  m ? m[2] : n ? `this.${n[1]}` : null;
+            let varr = "";
+            if(n){
+                if(selectionText.includes('this')){
+                    varr = `this.${n[1]}`;
+                } else {
+                    varr = `${n[1]}`;
+                }
+            }
+            const variable =  m ? m[2] : n ? varr : null;
     
             if(!variable) {
                 continue;
