@@ -2,12 +2,13 @@
   "name": "superlogs",
   "displayName": "superlogs",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "publisher": "harshdutt",
   "repository": {
     "type": "git",
     "url": "https://github.com/harshsummit/SuperLog.git"
   },
+  "icon": "src/images/logo.png",
   "engines": {
     "vscode": "^1.76.0"
   },

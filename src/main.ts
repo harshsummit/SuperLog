@@ -12,7 +12,9 @@ export const superLog = () => {
     const startLine = selection.start.line;
     const endLine = selection.end.line;
 
-    const getVariable = /(const|let|var)\s+(\w+)\s*=/;
+    const regex1 = /(const|let|var)\s+(\w+)\s*=/;
+    const regex2 = /(?:^|\.)\s*([a-zA-Z_]\w*)\s*=/;
+
 
 
    
@@ -21,17 +23,26 @@ export const superLog = () => {
         for (let i = startLine; i <= endLine; i++) {
             const line = editor.document.lineAt(i);
             const selectionText = line.text;
-            const m = selectionText.match(getVariable);;
+            if (selectionText.trim().endsWith('{') || selectionText.trim().endsWith(',')){
+                continue;
+            }
+            const m = selectionText.match(regex1);;
+            const n = selectionText.match(regex2);;
+
             let text = "";
             if(selectionText.lastIndexOf(";")===-1){
                 text += ";";
             }
-            console.log(m);
-            if (!m) {
-                continue;
-            }
-            const variable = m[2];
+            console.log('m---',m);
+            console.log('n---',n);
+            // if (!m && !n) {
+            //     continue;
+            // }
+            const variable =  m ? m[2] : n ? `this.${n[1]}` : null;
     
+            if(!variable) {
+                continue;
+            };
             // Insert text above current line
             const selectionLine = line;
             const insertPosition = selectionLine.range.end;
